@@ -1,0 +1,15 @@
+{
+  "name": "SHA1-Plugin",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "npm run develop",
+    "develop": "npm run build -- --watch",
+    "build": "kintone-plugin-packer --ppk private.ppk --out dist/plugin.zip src",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "@kintone/plugin-packer": "^1.0.1",
+    "eslint": "^4.19.1",
+    "eslint-config-kintone": "^1.3.0"
+  }
+}
