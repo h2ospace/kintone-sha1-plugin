@@ -1,24 +1,47 @@
-jQuery.noConflict();
+(function(PLUGIN_ID) {
+    "use strict";
 
-(function($, PLUGIN_ID) {
-    'use strict';
+    var old_password;
+    var config = kintone.plugin.app.getConfig(PLUGIN_ID);
 
-    kintone.events.on('app.record.index.show', function() {
-        var config = kintone.plugin.app.getConfig(PLUGIN_ID);
+    var events = [
+        'app.record.create.show',
+        'mobile.app.record.edit.show',
+        'app.record.edit.show',
+        'mobile.app.record.edit.show'
+    ];
 
-        var spaceElement = kintone.app.getHeaderSpaceElement();
-        var fragment = document.createDocumentFragment();
-        var headingEl = document.createElement('h3');
-        var messageEl = document.createElement('p');
+    kintone.events.on(events, function (event) {
+        var record = event.record;
 
-        messageEl.classList.add('plugin-space-message');
-        messageEl.textContent = config.message;
-        headingEl.classList.add('plugin-space-heading');
-        headingEl.textContent = 'Hello kintone plugin!';
+        if (record[config.sha1_field] == undefined) {
+            window.alert('SHA1パスワードに設定されたフィールドが存在しません');
+            return false;
+        }
 
-        fragment.appendChild(headingEl);
-        fragment.appendChild(messageEl);
-        spaceElement.appendChild(fragment);
+        old_password = record[config.sha1_field]['value'];
+
+        return event;
     });
 
-})(jQuery, kintone.$PLUGIN_ID);
+    events = [
+        'app.record.create.submit',
+        'mobile.app.record.create.submit',
+        'app.record.edit.submit',
+        'mobile.app.record.edit.submit'
+    ];
+
+    kintone.events.on(events, function (event) {
+        var record = event.record;
+
+        // 旧パスワードと違う場合は SHA1で暗号化
+        var password = record[config.sha1_field]['value'];
+        if (old_password != password) {
+            record[config.sha1_field]['value'] = CybozuLabs.SHA1.calc(password);
+        }
+
+        console.log(config.sha1_field);
+
+        return event;
+    });
+})(kintone.$PLUGIN_ID);

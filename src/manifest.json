@@ -5,6 +5,7 @@
   "desktop": {
     "js": [
       "https://js.cybozu.com/jquery/3.3.1/jquery.min.js",
+      "js/sha1.js",
       "js/desktop.js"
     ],
     "css": [
@@ -24,7 +25,7 @@
       "css/config.css"
     ],
     "required_params": [
-      "message"
+      "sha1_field"
     ]
   },
   "name": {
